@@ -141,7 +141,7 @@ export function HouseForm({
 
   return (
     <form
-      className="space-y-4"
+      className="glass specular rise space-y-4 rounded-[30px] p-4"
       onSubmit={async (e) => {
         e.preventDefault();
         if (!canSave) return;
@@ -226,16 +226,16 @@ export function HouseForm({
       )}
 
       {more && (
-        <div className="space-y-4 border-t border-line pt-4">
+        <div className="space-y-4 border-t border-[var(--hairline)] pt-4">
           <div>
             <Label hint="erstes = Titelbild">Bilder</Label>
             <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
               {d.images.map((src, i) => (
-                <div key={src + i} className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-line">
+                <div key={src + i} className="relative h-20 w-28 shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/80 shadow-md">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={src} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                   {i === 0 ? (
-                    <span className="absolute bottom-1 left-1 rounded bg-accent px-1 text-[10px] font-semibold text-accent-fg">Titel</span>
+                    <span className="btn-primary absolute bottom-1 left-1 px-1.5 py-0.5 text-[10px]">Titel</span>
                   ) : (
                     <button
                       type="button"
@@ -256,7 +256,7 @@ export function HouseForm({
                   </button>
                 </div>
               ))}
-              <label className="flex h-20 w-28 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-line text-xs text-muted">
+              <label className="press glass-thin flex h-20 w-28 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-dashed text-xs text-muted">
                 {uploading ? <Loader2 size={20} className="animate-spin" /> : <ImagePlus size={20} />}
                 {uploading ? "lädt …" : "Foto"}
                 <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => addFiles(e.target.files)} />
@@ -271,7 +271,7 @@ export function HouseForm({
                   set({ images: [...d.images, imgUrl.trim()] });
                   setImgUrl("");
                 }}
-                className="rounded-xl border border-line px-3 text-sm disabled:opacity-40"
+                className="press glass-thin rounded-full px-4 text-[14px] font-medium disabled:opacity-40"
               >
                 Hinzufügen
               </button>
@@ -338,8 +338,8 @@ export function HouseForm({
         </div>
       )}
 
-      <div className="sticky bottom-20 z-10 -mx-4 bg-gradient-to-t from-bg via-bg to-transparent px-4 pb-2 pt-4">
-        <button disabled={!canSave} className="w-full rounded-xl bg-accent py-3.5 font-semibold text-accent-fg shadow-sm disabled:opacity-40">
+      <div className="pt-2">
+        <button disabled={!canSave} className="btn-primary press w-full py-4 text-[16px]">
           {busy ? "Speichert …" : uploading ? "Bilder laden …" : mode === "create" ? "Haus speichern" : "Änderungen speichern"}
         </button>
       </div>
@@ -352,8 +352,8 @@ function CheckChip({ checked, onChange, label }: { checked: boolean; onChange: (
   return (
     <label
       className={cx(
-        "inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm",
-        checked ? "border-accent bg-accent-soft font-medium text-accent" : "border-line bg-surface",
+        "press inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-2 text-[14px]",
+        checked ? "bg-accent-soft font-semibold text-accent ring-1 ring-accent/30" : "glass-thin font-medium",
       )}
     >
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4 accent-[var(--accent)]" />

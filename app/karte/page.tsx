@@ -31,7 +31,7 @@ function MapView() {
   const s = state.settings;
 
   return (
-    <div className="relative h-[calc(100dvh-3.5rem-4.5rem)]">
+    <div className="relative isolate h-dvh">
       <HouseMap
         houses={houses}
         settings={s}
@@ -41,15 +41,15 @@ function MapView() {
         focus={focus}
       />
       {missing > 0 && !sel && (
-        <p className="absolute inset-x-3 top-3 z-[500] rounded-xl bg-surface/95 px-3 py-2 text-xs text-muted shadow">
+        <p className="glass-thin absolute inset-x-3 top-[calc(max(env(safe-area-inset-top),0.5rem)+4.25rem)] z-[500] mx-auto max-w-md rounded-2xl px-4 py-2.5 text-[12.5px] text-muted">
           {missing} {missing === 1 ? "Haus hat" : "Häuser haben"} noch keinen Ort. Unter „Bearbeiten“ Ort oder Koordinaten ergänzen.
         </p>
       )}
       {sel && (
-        <div className="absolute inset-x-3 bottom-3 z-[500] mx-auto max-w-md">
-          <div className="relative flex gap-3 overflow-hidden rounded-2xl border border-line bg-surface p-2.5 shadow-lg">
+        <div className="absolute inset-x-3 bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)+5.25rem)] z-[500] mx-auto max-w-md">
+          <div className="glass-strong sheet-in relative flex gap-3 overflow-hidden rounded-[28px] p-2">
             <Link href={`/haus/${sel.id}`} className="flex min-w-0 flex-1 gap-3">
-              <Cover src={sel.images[0]} alt={sel.name} className="h-20 w-24 shrink-0 rounded-xl" />
+              <Cover src={sel.images[0]} alt={sel.name} className="h-24 w-28 shrink-0 rounded-[22px]" />
               <div className="min-w-0 flex-1 py-0.5">
                 <StatusBadge status={sel.status} />
                 <p className="mt-1 truncate font-semibold">{sel.name}</p>

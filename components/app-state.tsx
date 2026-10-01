@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { AppState, Comment, House, Settings } from "@/lib/types";
+import { Sheet } from "./ui";
 
 type Ctx = {
   state: AppState | null;
@@ -242,9 +243,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
           }}
         />
       )}
-      <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex flex-col items-center gap-2 px-4">
+      <div className="pointer-events-none fixed inset-x-0 top-[max(env(safe-area-inset-top),0.75rem)] z-[80] flex flex-col items-center gap-2 px-4">
         {toasts.map((t) => (
-          <div key={t.id} className="rounded-full bg-fg px-4 py-2 text-sm text-bg shadow-lg">
+          <div key={t.id} className="glass-strong sheet-in rounded-full px-5 py-2.5 text-[14px] font-medium shadow-lg">
             {t.msg}
           </div>
         ))}
@@ -256,35 +257,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
 export function NameDialog({ initial = "", onSave, onCancel }: { initial?: string; onSave: (n: string) => void; onCancel: () => void }) {
   const [v, setV] = useState(initial);
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/40 sm:items-center" onClick={onCancel}>
+    <Sheet onClose={onCancel} label="Name" className="max-w-sm">
       <form
-        className="w-full max-w-sm rounded-t-2xl bg-surface p-5 pb-safe shadow-xl sm:rounded-2xl"
-        onClick={(e) => e.stopPropagation()}
+        className="p-6 pb-safe pt-4"
         onSubmit={(e) => {
           e.preventDefault();
           if (v.trim()) onSave(v);
         }}
       >
-        <h2 className="text-lg font-semibold">Wie heißt du?</h2>
-        <p className="mt-1 text-sm text-muted">Damit die anderen sehen, wer abstimmt und kommentiert.</p>
-        <input
-          autoFocus
-          value={v}
-          onChange={(e) => setV(e.target.value)}
-          maxLength={40}
-          placeholder="Vorname"
-          className="mt-4 w-full rounded-xl border border-line bg-bg px-3 py-3 outline-none focus:border-accent"
-        />
-        <div className="mt-4 flex gap-2">
-          <button type="button" onClick={onCancel} className="flex-1 rounded-xl border border-line py-3 text-sm font-medium">
+        <h2 className="font-display text-[34px] leading-none">Wie heißt du?</h2>
+        <p className="mt-2 text-[14.5px] text-muted">Damit die anderen sehen, wer abstimmt und kommentiert.</p>
+        <input autoFocus value={v} onChange={(e) => setV(e.target.value)} maxLength={40} placeholder="Vorname" className="field mt-5" />
+        <div className="mt-4 flex gap-2.5">
+          <button type="button" onClick={onCancel} className="press glass-thin flex-1 rounded-full py-3.5 text-[15px] font-medium">
             Abbrechen
           </button>
-          <button disabled={!v.trim()} className="flex-1 rounded-xl bg-accent py-3 text-sm font-semibold text-accent-fg disabled:opacity-40">
+          <button disabled={!v.trim()} className="btn-primary press flex-1 py-3.5 text-[15px]">
             Speichern
           </button>
         </div>
       </form>
-    </div>
+    </Sheet>
   );
 }
 

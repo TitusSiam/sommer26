@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { NO_FILTERS, type Filters } from "@/lib/filters";
 import { AMENITIES, AMENITY_LABEL, SOURCES, STATUSES, STATUS_LABEL, type Settings } from "@/lib/types";
 import { parseNumber } from "@/lib/calc";
-import { Chip, inputClass } from "./ui";
+import { Chip, Sheet, inputClass } from "./ui";
 
 const SEA_STEPS = [200, 500, 1000, 3000, 10000];
 const SLEEP_STEPS = [2, 4, 6, 8, 10, 12];
@@ -40,28 +40,22 @@ export function FilterSheet({
   const hasTrip = !!(settings.tripFrom && settings.tripTo);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
-      <div
-        className="flex max-h-[88dvh] w-full max-w-lg flex-col rounded-t-2xl bg-bg shadow-xl sm:rounded-2xl"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-label="Filter"
-      >
-        <div className="flex items-center justify-between border-b border-line px-4 py-3">
-          <button onClick={() => onChange({ ...NO_FILTERS, q: f.q })} className="text-sm text-accent">
+    <Sheet onClose={onClose} label="Filter" className="flex max-h-[90dvh] flex-col">
+        <div className="flex items-center justify-between px-5 pb-2 pt-3">
+          <button onClick={() => onChange({ ...NO_FILTERS, q: f.q })} className="press text-[15px] font-medium text-accent">
             Zurücksetzen
           </button>
-          <h2 className="font-semibold">Filter</h2>
-          <button onClick={onClose} aria-label="Schließen" className="rounded-full p-1 text-muted">
-            <X size={20} />
+          <h2 className="font-display text-[30px] leading-none">Filter</h2>
+          <button onClick={onClose} aria-label="Schließen" className="press glass-thin flex h-9 w-9 items-center justify-center rounded-full text-fg/70">
+            <X size={18} />
           </button>
         </div>
 
-        <div className="flex-1 space-y-6 overflow-y-auto px-4 py-4">
+        <div className="flex-1 space-y-6 overflow-y-auto px-5 py-4">
           <Group title="Gesamtpreis">
             <div>
               <label>
-                <span className="mb-1 block text-xs text-muted">max. gesamt</span>
+                <span className="mb-1.5 block px-1 text-[13px] text-muted">höchstens</span>
                 <input
                   inputMode="numeric"
                   placeholder="€"
@@ -122,7 +116,7 @@ export function FilterSheet({
                 Deckt unseren Reisezeitraum ab
               </Chip>
             </Row>
-            {!hasTrip && <p className="mt-2 text-xs text-muted">Reisezeitraum oben unter Einstellungen festlegen.</p>}
+            {!hasTrip && <p className="mt-2 px-1 text-[12.5px] text-muted">Reisezeitraum oben unter Einstellungen festlegen.</p>}
           </Group>
 
           <Group title="Quelle">
@@ -148,20 +142,19 @@ export function FilterSheet({
           )}
         </div>
 
-        <div className="border-t border-line p-4 pb-safe">
-          <button onClick={onClose} className="w-full rounded-xl bg-accent py-3 font-semibold text-accent-fg">
+        <div className="px-5 pb-safe pt-3">
+          <button onClick={onClose} className="btn-primary press w-full py-4 text-[16px]">
             {resultCount} {resultCount === 1 ? "Haus" : "Häuser"} anzeigen
           </button>
         </div>
-      </div>
-    </div>
+    </Sheet>
   );
 }
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h3 className="mb-2 text-sm font-semibold">{title}</h3>
+      <h3 className="mb-2.5 px-1 text-[13px] font-semibold uppercase tracking-[0.06em] text-muted">{title}</h3>
       {children}
     </section>
   );

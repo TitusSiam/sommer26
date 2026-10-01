@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Check, Heart, Minus, X } from "lucide-react";
 import { useApp, useDerived } from "@/components/app-state";
 import { Cover } from "@/components/house-card";
-import { Card, Empty, Spinner, StatusBadge, cx } from "@/components/ui";
+import { Card, Empty, PageTitle, Spinner, StatusBadge, cx } from "@/components/ui";
 import { coversTrip, distance, euro, prices, range } from "@/lib/calc";
 import { AMENITIES, AMENITY_LABEL, type House } from "@/lib/types";
 
@@ -27,16 +27,15 @@ export default function ComparePage() {
   if (picked.length < 2)
     return (
       <div>
-        <h1 className="mb-1 text-xl font-semibold">Vergleich</h1>
-        <p className="mb-4 text-sm text-muted">Wähle 2 bis 3 Häuser aus ({picked.length}/3).</p>
+        <PageTitle sub={`Wähle 2 bis 3 Häuser aus (${picked.length}/3).`}>Vergleich</PageTitle>
         {houses.length < 2 ? (
           <Empty title="Zu wenige Häuser">Füge mindestens zwei Häuser hinzu.</Empty>
         ) : (
-          <Card className="divide-y divide-line">
+          <Card className="rise divide-y divide-[var(--hairline)] overflow-hidden">
             {houses.map((h) => (
-              <label key={h.id} className="flex cursor-pointer items-center gap-3 p-3">
+              <label key={h.id} className="press flex cursor-pointer items-center gap-3 px-4 py-3">
                 <input type="checkbox" checked={compare.includes(h.id)} onChange={() => toggleCompare(h.id)} className="h-5 w-5 accent-[var(--accent)]" />
-                <Cover src={h.images[0]} alt="" className="h-10 w-14 shrink-0 rounded-lg" />
+                <Cover src={h.images[0]} alt="" className="h-12 w-16 shrink-0 rounded-[14px]" />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium">{h.name}</span>
                 <span className="text-sm text-muted">{euro(prices(h, s).total)}</span>
               </label>
@@ -70,28 +69,28 @@ export default function ComparePage() {
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Vergleich</h1>
-        <button onClick={clearCompare} className="text-sm text-accent">
-          Auswahl leeren
+      <div className="mb-4 flex items-end justify-between">
+        <PageTitle>Vergleich</PageTitle>
+        <button onClick={clearCompare} className="press glass-thin mb-6 rounded-full px-3.5 py-2 text-[13.5px] font-medium text-accent">
+          Leeren
         </button>
       </div>
 
-      <div className={cx("sticky top-14 z-20 -mx-4 grid gap-2 border-b border-line bg-bg/95 px-4 pb-3 pt-1 backdrop-blur", cols)}>
+      <div className={cx("glass specular sticky top-[calc(max(env(safe-area-inset-top),0.5rem)+4rem)] z-20 grid gap-2 rounded-[26px] p-2", cols)}>
         {picked.map((h) => (
           <div key={h.id} className="relative min-w-0">
             <Link href={`/haus/${h.id}`}>
-              <Cover src={h.images[0]} alt={h.name} className="aspect-[4/3] w-full rounded-xl" />
-              <p className="mt-1.5 line-clamp-2 text-sm font-semibold leading-tight">{h.name}</p>
+              <Cover src={h.images[0]} alt={h.name} className="aspect-[4/3] w-full rounded-[18px]" />
+              <p className="mt-1.5 line-clamp-2 px-1 pb-0.5 text-[13.5px] font-semibold leading-tight">{h.name}</p>
             </Link>
-            <button onClick={() => toggleCompare(h.id)} aria-label="Aus Vergleich entfernen" className="absolute right-1 top-1 rounded-full bg-black/55 p-0.5 text-white">
+            <button onClick={() => toggleCompare(h.id)} aria-label="Aus Vergleich entfernen" className="press glass-dark absolute right-1.5 top-1.5 rounded-full p-1">
               <X size={14} />
             </button>
           </div>
         ))}
       </div>
 
-      <div className="divide-y divide-line">
+      <div className="glass specular rise mt-3 divide-y divide-[var(--hairline)] rounded-[26px] px-3">
         {rows.map((r) => {
           const scores = r.score ? picked.map(r.score) : [];
           const valid = scores.filter((x): x is number => x != null);
@@ -99,12 +98,12 @@ export default function ComparePage() {
           const allSame = valid.length === picked.length && valid.every((v) => v === valid[0]);
           return (
             <div key={r.label} className="py-2.5">
-              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted">{r.label}</p>
-              <div className={cx("grid gap-2 text-sm", cols)}>
+              <p className="mb-1 px-1.5 text-[11.5px] font-semibold uppercase tracking-[0.06em] text-muted">{r.label}</p>
+              <div className={cx("grid gap-2 text-[14.5px]", cols)}>
                 {picked.map((h, i) => {
                   const isBest = target != null && !allSame && scores[i] === target;
                   return (
-                    <div key={h.id} className={cx("min-w-0 break-words rounded-lg px-1.5 py-1", isBest && "bg-ok-soft font-semibold text-ok")}>
+                    <div key={h.id} className={cx("min-w-0 break-words rounded-xl px-1.5 py-1", isBest && "bg-ok-soft font-semibold text-ok")}>
                       {r.render(h)}
                     </div>
                   );
@@ -114,7 +113,7 @@ export default function ComparePage() {
           );
         })}
       </div>
-      <p className="mt-3 text-xs text-muted">Grün = bester Wert in der Zeile.</p>
+      <p className="mt-3 px-1 text-[12px] text-muted">Grün = bester Wert in der Zeile.</p>
     </div>
   );
 }

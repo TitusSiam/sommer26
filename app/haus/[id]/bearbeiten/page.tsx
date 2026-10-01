@@ -4,7 +4,7 @@ import { use } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/app-state";
 import { HouseForm } from "@/components/house-form";
-import { Empty, Spinner } from "@/components/ui";
+import { Empty, PageTitle, Spinner } from "@/components/ui";
 
 export default function EditHousePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -15,7 +15,7 @@ export default function EditHousePage({ params }: { params: Promise<{ id: string
   if (!house) return <Empty title="Haus nicht gefunden" />;
   return (
     <div>
-      <h1 className="mb-5 text-xl font-semibold">Bearbeiten</h1>
+      <PageTitle sub={house.name}>Bearbeiten</PageTitle>
       <HouseForm
         mode="edit"
         initial={house}

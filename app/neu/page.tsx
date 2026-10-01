@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/app-state";
 import { HouseForm } from "@/components/house-form";
+import { PageTitle } from "@/components/ui";
 
 export default function NewHousePage() {
   const { createHouse, withName, me } = useApp();
   const router = useRouter();
   return (
     <div>
-      <h1 className="mb-1 text-xl font-semibold">Haus hinzufügen</h1>
-      <p className="mb-5 text-sm text-muted">Link einfügen, Preis und Schlafplätze ergänzen, fertig. Details gehen auch später.</p>
+      <PageTitle sub="Link einfügen, Preis und Schlafplätze ergänzen, fertig. Details gehen auch später.">Neues Haus</PageTitle>
       <HouseForm
         mode="create"
         onSubmit={(h) =>

@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowUpDown, Crown, Heart, Search, Share2, SlidersHorizontal, X } from "lucide-react";
+import { ArrowUpDown, ChevronRight, Crown, Heart, Search, Share2, SlidersHorizontal, X } from "lucide-react";
 import { useApp, useDerived } from "@/components/app-state";
 import { HouseCard, Cover } from "@/components/house-card";
 import { FilterSheet } from "@/components/filter-sheet";
 import { ActivityItem } from "@/components/activity-item";
-import { Card, Chip, Empty, Spinner } from "@/components/ui";
+import { Card, Chip, Empty, SectionTitle, Spinner, cx } from "@/components/ui";
 import { NO_FILTERS, SORTS, activeFilterCount, matches, sortHouses, type Filters, type SortKey } from "@/lib/filters";
-import { euro, prices } from "@/lib/calc";
+import { euro, nightsBetween, prices, range } from "@/lib/calc";
 import { appUrl, whatsappHref } from "@/lib/share";
 import { AMENITY_LABEL, DEFAULT_SETTINGS, STATUS_LABEL } from "@/lib/types";
 
@@ -61,14 +61,26 @@ export default function HomePage() {
 
   if (!state) return error ? <Empty title="Laden fehlgeschlagen">{error}</Empty> : <Spinner />;
 
+  const nights = nightsBetween(settings.tripFrom, settings.tripTo);
+  const subline = [
+    `${houses.length} ${houses.length === 1 ? "Haus" : "Häuser"}`,
+    settings.tripFrom && settings.tripTo ? `${range(settings.tripFrom, settings.tripTo)}${nights ? ` · ${nights} Nächte` : ""}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   if (!houses.length)
     return (
-      <Empty title="Noch keine Häuser">
-        <p>Füge das erste Angebot hinzu. Link einfügen reicht, der Rest geht später.</p>
-        <Link href="/neu" className="mt-5 inline-block rounded-xl bg-accent px-5 py-3 font-semibold text-accent-fg">
-          Haus hinzufügen
-        </Link>
-      </Empty>
+      <div>
+        <Title name={settings.tripName} sub="Noch leer. Zeit für Fernweh." />
+        <Card className="rise p-6 text-center">
+          <p className="font-display text-[30px] leading-tight">Das erste Haus</p>
+          <p className="mx-auto mt-2 max-w-xs text-[15px] text-muted">Link von Airbnb, Booking oder FeWo-direkt einfügen. Den Rest ergänzt ihr später.</p>
+          <Link href="/neu" className="btn-primary press mt-5 px-6 py-3.5 text-[15px]">
+            Haus hinzufügen
+          </Link>
+        </Card>
+      </div>
     );
 
   const rankingText = () =>
@@ -85,32 +97,29 @@ export default function HomePage() {
       .join("\n");
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
+      <Title name={settings.tripName} sub={subline} />
       <Overview />
 
-      <section className="space-y-3">
+      <section className="space-y-3.5">
+        <SectionTitle>Häuser</SectionTitle>
         <div className="flex gap-2">
-          <label className="relative flex-1">
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+          <label className="glass-thin relative flex flex-1 items-center rounded-full">
+            <Search size={18} className="pointer-events-none absolute left-4 text-muted" />
             <input
               value={filters.q}
               onChange={(e) => update({ ...filters, q: e.target.value })}
               placeholder="Suchen"
-              className="w-full rounded-xl border border-line bg-surface py-2.5 pl-10 pr-3 outline-none focus:border-accent"
+              className="w-full rounded-full bg-transparent py-3 pl-11 pr-4 outline-none placeholder:text-faint"
             />
           </label>
-          <button
-            onClick={() => setSheet(true)}
-            className="relative flex items-center gap-1.5 rounded-xl border border-line bg-surface px-3 text-sm font-medium"
-          >
-            <SlidersHorizontal size={18} /> Filter
-            {count > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-accent-fg">{count}</span>
-            )}
+          <button onClick={() => setSheet(true)} aria-label="Filter" className="press glass-thin relative flex h-12 w-12 items-center justify-center rounded-full">
+            <SlidersHorizontal size={19} />
+            {count > 0 && <span className="btn-primary absolute -right-0.5 -top-0.5 h-5 min-w-5 px-1 text-[11px]">{count}</span>}
           </button>
         </div>
 
-        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 py-1">
           <Chip active={filters.pool} onClick={() => update({ ...filters, pool: !filters.pool })}>
             Pool
           </Chip>
@@ -141,21 +150,21 @@ export default function HomePage() {
           </Chip>
         </div>
 
-        <div className="flex items-center justify-between gap-2 text-sm">
+        <div className="flex items-center justify-between gap-2 px-1 text-[13.5px]">
           <p className="text-muted">
-            {visible.length} von {houses.length} {houses.length === 1 ? "Haus" : "Häusern"}
+            {visible.length} von {houses.length}
             {count > 0 && (
-              <button onClick={() => update(NO_FILTERS)} className="ml-2 inline-flex items-center gap-0.5 text-accent">
+              <button onClick={() => update(NO_FILTERS)} className="press ml-2 inline-flex items-center gap-0.5 font-medium text-accent">
                 <X size={14} /> Filter löschen
               </button>
             )}
           </p>
-          <label className="flex items-center gap-1 text-muted">
-            <ArrowUpDown size={15} />
+          <label className="press glass-thin flex items-center gap-1.5 rounded-full py-1.5 pl-3 pr-2">
+            <ArrowUpDown size={14} className="text-muted" />
             <select
               value={sort}
               onChange={(e) => updateSort(e.target.value as SortKey)}
-              className="max-w-44 bg-transparent py-1 text-sm font-medium text-fg outline-none"
+              className="max-w-44 appearance-none bg-transparent pr-1 text-[13.5px] font-semibold text-fg outline-none"
               aria-label="Sortierung"
             >
               {Object.entries(SORTS).map(([k, l]) => (
@@ -169,8 +178,8 @@ export default function HomePage() {
 
         {visible.length ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            {visible.map((h) => (
-              <HouseCard key={h.id} house={h} settings={settings} favorite={favoriteIds.has(h.id) && favorites.length === 1} />
+            {visible.map((h, i) => (
+              <HouseCard key={h.id} index={i} house={h} settings={settings} favorite={favoriteIds.has(h.id) && favorites.length === 1} />
             ))}
           </div>
         ) : (
@@ -180,24 +189,21 @@ export default function HomePage() {
         {visible.some((h) => {
           const p = prices(h, settings);
           return p.totalDerived || p.perDayDerived;
-        }) && <p className="text-xs text-muted">* berechnet aus Preis pro Nacht × Nächte bzw. Gesamtpreis ÷ Nächte.</p>}
-
-        <a
-          href={whatsappHref(rankingText())}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl border border-line bg-surface py-3 text-sm font-medium"
-        >
-          <Share2 size={16} /> Stand in WhatsApp teilen
-        </a>
+        }) && <p className="px-1 text-[12px] text-muted">* berechnet aus Preis pro Nacht × Nächte bzw. Gesamtpreis ÷ Nächte.</p>}
       </section>
+
+      <Recent />
+
+      <a href={whatsappHref(rankingText())} target="_blank" rel="noopener noreferrer" className="press glass-thin flex items-center justify-center gap-2 rounded-full py-3.5 text-[15px] font-semibold">
+        <Share2 size={17} className="text-[#25D366]" /> Stand in WhatsApp teilen
+      </a>
 
       {compare.length >= 2 && (
         <Link
           href="/vergleich"
-          className="fixed inset-x-4 bottom-24 z-30 mx-auto flex max-w-md items-center justify-center rounded-xl bg-fg py-3 text-sm font-semibold text-bg shadow-lg"
+          className="btn-primary press sheet-in fixed inset-x-4 bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)+5.25rem)] z-30 mx-auto max-w-xs py-3 text-[15px]"
         >
-          {compare.length} Häuser vergleichen
+          {compare.length} Häuser vergleichen <ChevronRight size={18} />
         </Link>
       )}
 
@@ -215,6 +221,16 @@ export default function HomePage() {
   );
 }
 
+function Title({ name, sub }: { name: string; sub: string }) {
+  return (
+    <div className="rise -mt-12 px-1 pt-1">
+      <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-accent">Ferienhaus</p>
+      <h1 className="font-display mt-1 text-[52px] leading-[0.92]">{name}</h1>
+      <p className="mt-2.5 text-[15px] text-muted">{sub}</p>
+    </div>
+  );
+}
+
 function Overview() {
   const { state } = useApp();
   const { houses, ranked, favorites } = useDerived();
@@ -224,46 +240,64 @@ function Overview() {
   const maxVotes = ranked[0]?.v ?? 0;
   const counts = { frei: 0, angefragt: 0, raus: 0 };
   for (const h of houses) counts[h.status]++;
-  const recent = state.activity.slice(0, 3);
+  const dot = { frei: "bg-[#34c759]", angefragt: "bg-[#ffb300]", raus: "bg-[#8e8e93]" } as const;
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-3.5">
       {fav ? (
-        <Link href={`/haus/${fav.id}`} className="block">
-          <Card className="flex items-center gap-3 overflow-hidden border-accent p-2.5">
-            <Cover src={fav.images[0]} alt={fav.name} className="h-16 w-20 shrink-0 rounded-xl" />
-            <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-accent">
-                <Crown size={13} /> Aktueller Favorit
-              </p>
-              <p className="truncate font-semibold">{fav.name}</p>
-              <p className="text-sm text-muted">
-                {maxVotes} {maxVotes === 1 ? "Stimme" : "Stimmen"} · {euro(prices(fav, settings).total)} gesamt
-              </p>
+        <Link href={`/haus/${fav.id}`} className="rise press glass specular block rounded-[32px] p-1.5" style={{ animationDelay: "60ms" }}>
+          <div className="relative overflow-hidden rounded-[26px]">
+            <Cover src={fav.images[0]} alt={fav.name} className="aspect-[16/10] w-full" />
+            <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+            <div className="glass-dark absolute inset-x-2.5 bottom-2.5 flex items-end gap-3 rounded-[20px] p-3.5">
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-white/80">
+                  <Crown size={13} /> Aktueller Favorit
+                </p>
+                <p className="font-display mt-0.5 truncate text-[30px] leading-none">{fav.name}</p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="flex items-center justify-end gap-1 text-[15px] font-semibold">
+                  <Heart size={15} fill="currentColor" className="text-[#ff7b86]" /> {maxVotes}
+                </p>
+                <p className="text-[12.5px] text-white/80">{euro(prices(fav, settings).total)}</p>
+              </div>
             </div>
-          </Card>
+          </div>
         </Link>
       ) : (
-        <Card className="p-3.5 text-sm">
-          <p className="font-semibold">{favorites.length > 1 ? `Gleichstand zwischen ${favorites.length} Häusern` : "Noch kein Favorit"}</p>
-          <p className="text-muted">
-            {favorites.length > 1 ? favorites.map((h) => h.name).join(", ") : "Tippe auf das Herz bei den Häusern, die dir gefallen."}
+        <Card className="rise p-5">
+          <p className="font-display text-[26px] leading-tight">{favorites.length > 1 ? "Gleichstand" : "Noch kein Favorit"}</p>
+          <p className="mt-1 text-[14.5px] text-muted">
+            {favorites.length > 1 ? favorites.map((h) => h.name).join(" · ") : "Tippe auf das Herz bei den Häusern, die dir gefallen."}
           </p>
         </Card>
       )}
 
+      <Card className="rise grid grid-cols-3 divide-x divide-[var(--hairline)] py-4">
+        {(["frei", "angefragt", "raus"] as const).map((s) => (
+          <div key={s} className="text-center">
+            <p className="font-display text-[34px] leading-none tabular-nums">{counts[s]}</p>
+            <p className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] text-muted">
+              <span className={cx("h-1.5 w-1.5 rounded-full", dot[s])} />
+              {STATUS_LABEL[s]}
+            </p>
+          </div>
+        ))}
+      </Card>
+
       {ranked.length > 1 && (
-        <Card className="p-3.5">
-          <p className="mb-2 text-sm font-semibold">Ranking</p>
-          <ol className="space-y-2">
+        <Card className="rise p-4">
+          <p className="mb-3 px-0.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-muted">Ranking</p>
+          <ol className="space-y-3">
             {ranked.slice(0, 5).map(({ h, v }, i) => (
               <li key={h.id}>
-                <Link href={`/haus/${h.id}`} className="flex items-center gap-2 text-sm">
-                  <span className="w-4 text-muted">{i + 1}</span>
+                <Link href={`/haus/${h.id}`} className="press flex items-center gap-3 text-[15px]">
+                  <span className="font-display w-5 text-center text-[22px] leading-none text-muted">{i + 1}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate">{h.name}</span>
-                    <span className="mt-1 block h-1.5 rounded-full bg-surface-2">
-                      <span className="block h-1.5 rounded-full bg-accent" style={{ width: `${(v / maxVotes) * 100}%` }} />
+                    <span className="block truncate font-medium">{h.name}</span>
+                    <span className="mt-1.5 block h-[5px] overflow-hidden rounded-full bg-[rgb(12_29_39/0.07)]">
+                      <span className="block h-full rounded-full bg-gradient-to-r from-[#5ac8fa] to-[#0a7cff]" style={{ width: `${(v / maxVotes) * 100}%` }} />
                     </span>
                   </span>
                   <span className="flex items-center gap-1 tabular-nums text-muted">
@@ -275,31 +309,32 @@ function Overview() {
           </ol>
         </Card>
       )}
+    </section>
+  );
+}
 
-      <div className="grid grid-cols-3 gap-2 text-center">
-        {(["frei", "angefragt", "raus"] as const).map((s) => (
-          <Card key={s} className="py-2.5">
-            <p className="text-lg font-bold tabular-nums">{counts[s]}</p>
-            <p className="text-xs text-muted">{STATUS_LABEL[s]}</p>
-          </Card>
-        ))}
-      </div>
-
-      {recent.length > 0 && (
-        <Card className="p-3.5">
-          <div className="mb-1 flex items-center justify-between">
-            <p className="text-sm font-semibold">Zuletzt passiert</p>
-            <Link href="/aktivitaet" className="text-sm text-accent">
-              Alle
-            </Link>
-          </div>
-          <ul className="divide-y divide-line">
-            {recent.map((a) => (
-              <ActivityItem key={a.id} a={a} compact />
-            ))}
-          </ul>
-        </Card>
-      )}
+function Recent() {
+  const { state } = useApp();
+  const recent = state?.activity.slice(0, 3) ?? [];
+  if (!recent.length) return null;
+  return (
+    <section>
+      <SectionTitle
+        action={
+          <Link href="/aktivitaet" className="text-[14px] font-medium text-accent">
+            Alle
+          </Link>
+        }
+      >
+        Zuletzt passiert
+      </SectionTitle>
+      <Card className="px-4 py-1">
+        <ul className="divide-y divide-[var(--hairline)]">
+          {recent.map((a) => (
+            <ActivityItem key={a.id} a={a} compact />
+          ))}
+        </ul>
+      </Card>
     </section>
   );
 }

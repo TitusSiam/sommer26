@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/app-state";
-import { Label, Spinner, inputClass } from "@/components/ui";
+import { Card, Label, PageTitle, Spinner, inputClass } from "@/components/ui";
 import { nightsBetween } from "@/lib/calc";
 
 export default function TripSettingsPage() {
@@ -36,8 +36,8 @@ export default function TripSettingsPage() {
         });
       }}
     >
-      <h1 className="text-xl font-semibold">Reise</h1>
-      <p className="text-sm text-muted">Gilt für alle. Der Zeitraum fließt in die Preisrechnung und den Zeitraum-Filter ein.</p>
+      <PageTitle sub="Gilt für alle. Der Zeitraum fließt in die Preisrechnung und den Zeitraum-Filter ein.">Reise</PageTitle>
+      <Card className="rise space-y-4 p-4">
       <label className="block">
         <Label>Name der Reise</Label>
         <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="z. B. Sardinien 2027" />
@@ -49,7 +49,8 @@ export default function TripSettingsPage() {
           <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={inputClass} aria-label="Abreise" />
         </div>
       </div>
-      <button className="w-full rounded-xl bg-accent py-3.5 font-semibold text-accent-fg">Speichern{!me && " (Name wird abgefragt)"}</button>
+      </Card>
+      <button className="btn-primary press w-full py-4 text-[16px]">Speichern{!me && " (Name wird abgefragt)"}</button>
     </form>
   );
 }

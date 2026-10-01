@@ -2,17 +2,17 @@
 
 import { useApp } from "@/components/app-state";
 import { ActivityItem } from "@/components/activity-item";
-import { Card, Empty, Spinner } from "@/components/ui";
+import { Card, Empty, PageTitle, Spinner } from "@/components/ui";
 
 export default function ActivityPage() {
   const { state } = useApp();
   if (!state) return <Spinner />;
   return (
     <div>
-      <h1 className="mb-3 text-xl font-semibold">Aktivität</h1>
+      <PageTitle sub="Was die Gruppe zuletzt gemacht hat">Aktivität</PageTitle>
       {state.activity.length ? (
-        <Card className="px-3.5">
-          <ul className="divide-y divide-line">
+        <Card className="rise px-4 py-1">
+          <ul className="divide-y divide-[var(--hairline)]">
             {state.activity.map((a) => (
               <ActivityItem key={a.id} a={a} />
             ))}

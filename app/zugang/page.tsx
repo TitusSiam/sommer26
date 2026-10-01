@@ -19,7 +19,7 @@ function AccessForm() {
   return (
     <div className="flex min-h-dvh items-center justify-center px-4">
       <form
-        className="w-full max-w-sm space-y-4"
+        className="glass specular sheet-in w-full max-w-sm space-y-4 rounded-[32px] p-6"
         onSubmit={async (e) => {
           e.preventDefault();
           const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
@@ -27,11 +27,11 @@ function AccessForm() {
           else setError("Code stimmt nicht.");
         }}
       >
-        <h1 className="text-xl font-semibold">Gruppen-Code</h1>
+        <h1 className="font-display text-[44px] leading-none">Gruppen-Code</h1>
         <p className="text-sm text-muted">Den Code bekommst du von der Person, die die Reise organisiert. Links aus der WhatsApp-Gruppe enthalten ihn bereits.</p>
         <input autoFocus value={code} onChange={(e) => setCode(e.target.value)} className={inputClass} placeholder="Code" />
         {error && <p className="text-sm text-danger">{error}</p>}
-        <button className="w-full rounded-xl bg-accent py-3 font-semibold text-accent-fg">Weiter</button>
+        <button className="btn-primary press w-full py-4 text-[16px]">Weiter</button>
       </form>
     </div>
   );

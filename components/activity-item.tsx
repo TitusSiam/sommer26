@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Heart, HeartOff, MessageCircle, Pencil, Plus, Settings2, Tag, Trash2 } from "lucide-react";
 import { timeAgo } from "@/lib/calc";
 import type { Activity, ActivityType } from "@/lib/types";
+import { Avatar } from "./shell";
 
 const ICON: Record<ActivityType, typeof Plus> = {
   add: Plus,
@@ -31,18 +32,21 @@ export function ActivityItem({ a, compact }: { a: Activity; compact?: boolean })
   const Icon = ICON[a.type];
   const name = a.houseName && (a.houseId ? <Link href={`/haus/${a.houseId}`} className="font-medium underline-offset-2 hover:underline">{a.houseName}</Link> : <span className="font-medium">{a.houseName}</span>);
   return (
-    <li className="flex gap-3 py-2.5">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-muted">
-        <Icon size={14} />
+    <li className="flex gap-3 py-3">
+      <span className="relative mt-0.5">
+        <Avatar name={a.author} size={34} />
+        <span className="glass-strong absolute -bottom-1 -right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full text-fg/70">
+          <Icon size={10} strokeWidth={2.4} />
+        </span>
       </span>
-      <div className="min-w-0 flex-1 text-sm">
+      <div className="min-w-0 flex-1 text-[14.5px] leading-snug">
         <p className={compact ? "truncate" : ""}>
           <span className="font-semibold">{a.author}</span> {VERB[a.type]} {name}
         </p>
         {a.detail && a.type !== "settings" && (
-          <p className={`text-muted ${compact ? "truncate" : ""}`}>{a.type === "comment" ? `„${a.detail}“` : a.detail}</p>
+          <p className={`mt-0.5 text-[13.5px] text-muted ${compact ? "truncate" : ""}`}>{a.type === "comment" ? `„${a.detail}“` : a.detail}</p>
         )}
-        <p className="text-xs text-muted">{timeAgo(a.at)}</p>
+        <p className="mt-0.5 text-[12px] text-faint">{timeAgo(a.at)}</p>
       </div>
     </li>
   );
