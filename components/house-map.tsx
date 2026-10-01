@@ -57,7 +57,7 @@ export default function HouseMap({
       <Fit houses={located} focus={focus} />
       {located.map((h) => {
         const p = prices(h, settings);
-        const label = p.perPerson != null ? `${euro(p.perPerson)} p. P.` : h.name.slice(0, 14);
+        const label = p.total != null ? `${euro(p.total)}${p.totalDerived ? "*" : ""}` : h.name.slice(0, 14);
         const cls = [favoriteIds.has(h.id) || selected === h.id ? "is-fav" : "", `is-${h.status}`].join(" ");
         return (
           <Marker

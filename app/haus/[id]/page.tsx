@@ -115,10 +115,11 @@ export default function HouseDetailPage({ params }: { params: Promise<{ id: stri
       <Card className="p-4">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-2xl font-bold">{euro(p.perPerson)}</p>
-            <p className="text-sm text-muted">
-              pro Person{p.persons ? ` (÷ ${p.persons} ${p.personsFromGroup ? "Mitreisende" : "Schlafplätze"})` : ""}
+            <p className="text-2xl font-bold">
+              {euro(p.total)}
+              {p.totalDerived && " *"}
             </p>
+            <p className="text-sm text-muted">gesamt</p>
           </div>
           {h.url && (
             <a
@@ -132,7 +133,6 @@ export default function HouseDetailPage({ params }: { params: Promise<{ id: stri
           )}
         </div>
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 text-sm">
-          <Fact label="Gesamtpreis" value={`${euro(p.total)}${p.totalDerived ? " *" : ""}`} />
           <Fact label="Pro Nacht" value={`${euro(p.perDay)}${p.perDayDerived ? " *" : ""}`} />
           <Fact label="Schlafplätze" value={h.sleeps ?? "–"} />
           <Fact label="Zum Meer" value={distance(h.seaDistance)} />

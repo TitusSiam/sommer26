@@ -54,7 +54,7 @@ function MapView() {
                 <StatusBadge status={sel.status} />
                 <p className="mt-1 truncate font-semibold">{sel.name}</p>
                 <p className="text-sm text-muted">
-                  {euro(prices(sel, s).perPerson)} p. P. · {distance(sel.seaDistance)} Meer
+                  {euro(prices(sel, s).total)} gesamt · {distance(sel.seaDistance)} Meer
                 </p>
                 <p className="flex items-center gap-1 text-xs text-muted">
                   <Heart size={12} /> {voteCount(sel.id)}

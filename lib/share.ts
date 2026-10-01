@@ -14,7 +14,6 @@ export function whatsappHref(text: string): string {
 export function houseShareText(h: House, s: Settings, votes: number, shareCode: string | null): string {
   const p = prices(h, s);
   const facts = [
-    p.perPerson != null ? `${euro(p.perPerson)} p. P.` : null,
     p.total != null ? `${euro(p.total)} gesamt` : null,
     h.sleeps ? `${h.sleeps} Schlafplätze` : null,
     h.pool ? "Pool" : null,

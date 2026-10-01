@@ -59,7 +59,6 @@ export function cleanHouse(input: Record<string, unknown>, base: House): House {
 export function cleanSettings(input: Record<string, unknown>): Settings {
   return {
     tripName: str(input.tripName, 80) || DEFAULT_SETTINGS.tripName,
-    groupSize: num(input.groupSize, 1, 100),
     tripFrom: date(input.tripFrom),
     tripTo: date(input.tripTo),
   };

@@ -75,8 +75,8 @@ export default function HomePage() {
     [
       `🏡 ${settings.tripName}: aktueller Stand`,
       ...ranked.slice(0, 5).map(({ h, v }, i) => {
-        const pp = prices(h, settings).perPerson;
-        return `${i + 1}. ${h.name} (${v} 👍${pp != null ? `, ${euro(pp)} p. P.` : ""})`;
+        const total = prices(h, settings).total;
+        return `${i + 1}. ${h.name} (${v} 👍${total != null ? `, ${euro(total)} gesamt` : ""})`;
       }),
       ranked.length ? "" : "Noch keine Stimmen. Jetzt abstimmen:",
       appUrl("/", state.shareCode),
@@ -177,15 +177,10 @@ export default function HomePage() {
           <Empty title="Nichts gefunden">Filter lockern oder zurücksetzen.</Empty>
         )}
 
-        {settings.groupSize == null && (
-          <p className="text-xs text-muted">
-            Preis pro Person wird durch die Schlafplätze geteilt. Für eine genauere Rechnung die Gruppengröße unter{" "}
-            <Link href="/reise" className="underline">
-              Einstellungen
-            </Link>{" "}
-            eintragen. * = berechnet aus Preis/Nacht bzw. Gesamtpreis.
-          </p>
-        )}
+        {visible.some((h) => {
+          const p = prices(h, settings);
+          return p.totalDerived || p.perDayDerived;
+        }) && <p className="text-xs text-muted">* berechnet aus Preis pro Nacht × Nächte bzw. Gesamtpreis ÷ Nächte.</p>}
 
         <a
           href={whatsappHref(rankingText())}
@@ -243,7 +238,7 @@ function Overview() {
               </p>
               <p className="truncate font-semibold">{fav.name}</p>
               <p className="text-sm text-muted">
-                {maxVotes} {maxVotes === 1 ? "Stimme" : "Stimmen"} · {euro(prices(fav, settings).perPerson)} p. P.
+                {maxVotes} {maxVotes === 1 ? "Stimme" : "Stimmen"} · {euro(prices(fav, settings).total)} gesamt
               </p>
             </div>
           </Card>

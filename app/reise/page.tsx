@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/app-state";
 import { Label, Spinner, inputClass } from "@/components/ui";
-import { nightsBetween, parseNumber } from "@/lib/calc";
+import { nightsBetween } from "@/lib/calc";
 
 export default function TripSettingsPage() {
   const { state, saveSettings, withName, me } = useApp();
   const router = useRouter();
   const [name, setName] = useState("");
-  const [size, setSize] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [loaded, setLoaded] = useState(false);
@@ -18,7 +17,6 @@ export default function TripSettingsPage() {
   useEffect(() => {
     if (!state || loaded) return;
     setName(state.settings.tripName);
-    setSize(state.settings.groupSize ? String(state.settings.groupSize) : "");
     setFrom(state.settings.tripFrom ?? "");
     setTo(state.settings.tripTo ?? "");
     setLoaded(true);
@@ -33,20 +31,16 @@ export default function TripSettingsPage() {
       onSubmit={(e) => {
         e.preventDefault();
         withName(async () => {
-          const ok = await saveSettings({ tripName: name, groupSize: parseNumber(size), tripFrom: from || null, tripTo: to || null });
+          const ok = await saveSettings({ tripName: name, tripFrom: from || null, tripTo: to || null });
           if (ok) router.push("/");
         });
       }}
     >
       <h1 className="text-xl font-semibold">Reise</h1>
-      <p className="text-sm text-muted">Gilt für alle. Gruppengröße und Zeitraum fließen in Preis pro Person und den Zeitraum-Filter ein.</p>
+      <p className="text-sm text-muted">Gilt für alle. Der Zeitraum fließt in die Preisrechnung und den Zeitraum-Filter ein.</p>
       <label className="block">
         <Label>Name der Reise</Label>
         <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="z. B. Sardinien 2027" />
-      </label>
-      <label className="block">
-        <Label hint="Preis pro Person = Gesamtpreis ÷ Personen">Anzahl Mitreisende</Label>
-        <input inputMode="numeric" value={size} onChange={(e) => setSize(e.target.value)} className={inputClass} placeholder="z. B. 8" />
       </label>
       <div>
         <Label hint={nights ? `${nights} Nächte` : undefined}>Reisezeitraum</Label>

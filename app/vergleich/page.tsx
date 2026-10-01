@@ -38,7 +38,7 @@ export default function ComparePage() {
                 <input type="checkbox" checked={compare.includes(h.id)} onChange={() => toggleCompare(h.id)} className="h-5 w-5 accent-[var(--accent)]" />
                 <Cover src={h.images[0]} alt="" className="h-10 w-14 shrink-0 rounded-lg" />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium">{h.name}</span>
-                <span className="text-sm text-muted">{euro(prices(h, s).perPerson)}</span>
+                <span className="text-sm text-muted">{euro(prices(h, s).total)}</span>
               </label>
             ))}
           </Card>
@@ -49,7 +49,6 @@ export default function ComparePage() {
   const rows: Row[] = [
     { label: "Status", render: (h) => <StatusBadge status={h.status} /> },
     { label: "Stimmen", render: (h) => <span className="inline-flex items-center gap-1"><Heart size={14} /> {voteCount(h.id)}</span>, score: (h) => voteCount(h.id), best: "max" },
-    { label: "Preis pro Person", render: (h) => euro(prices(h, s).perPerson), score: (h) => prices(h, s).perPerson, best: "min" },
     { label: "Gesamtpreis", render: (h) => euro(prices(h, s).total), score: (h) => prices(h, s).total, best: "min" },
     { label: "Preis pro Nacht", render: (h) => euro(prices(h, s).perDay), score: (h) => prices(h, s).perDay, best: "min" },
     { label: "Schlafplätze", render: (h) => h.sleeps ?? "–", score: (h) => h.sleeps, best: "max" },

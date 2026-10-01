@@ -57,23 +57,20 @@ export function HouseCard({ house: h, settings, favorite }: { house: House; sett
             </p>
           </Link>
           <div className="text-right">
-            <p className="text-lg font-bold leading-tight">{euro(p.perPerson)}</p>
-            <p className="text-xs text-muted">pro Person</p>
+            <p className="text-lg font-bold leading-tight">
+              {euro(p.total)}
+              {p.totalDerived && "*"}
+            </p>
+            <p className="text-xs text-muted">gesamt</p>
           </div>
         </div>
 
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
-          <span>
-            {euro(p.total)}
-            {p.totalDerived && "*"} gesamt
-          </span>
-          {p.perDay != null && (
-            <span>
-              {euro(p.perDay)}
-              {p.perDayDerived && "*"}/Nacht
-            </span>
-          )}
-        </div>
+        {p.perDay != null && (
+          <p className="mt-1.5 text-sm text-muted">
+            {euro(p.perDay)}
+            {p.perDayDerived && "*"} pro Nacht
+          </p>
+        )}
 
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs">
           {h.sleeps != null && (

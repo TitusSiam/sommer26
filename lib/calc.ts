@@ -20,10 +20,6 @@ export type Prices = {
   totalDerived: boolean;
   perDay: number | null;
   perDayDerived: boolean;
-  perPerson: number | null;
-  /** Anzahl Personen, durch die geteilt wurde */
-  persons: number | null;
-  personsFromGroup: boolean;
 };
 
 export function prices(h: House, s: Settings): Prices {
@@ -40,16 +36,11 @@ export function prices(h: House, s: Settings): Prices {
     perDay = h.totalPrice / n;
     perDayDerived = true;
   }
-  const persons = s.groupSize || h.sleeps || null;
-  const perPerson = total != null && persons ? total / persons : null;
   return {
     total,
     totalDerived,
     perDay,
     perDayDerived,
-    perPerson,
-    persons,
-    personsFromGroup: !!s.groupSize,
   };
 }
 

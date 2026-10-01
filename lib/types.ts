@@ -70,8 +70,6 @@ export type Activity = {
 
 export type Settings = {
   tripName: string;
-  /** Anzahl Mitreisende, Basis für Preis pro Person */
-  groupSize: number | null;
   tripFrom: string | null;
   tripTo: string | null;
 };
@@ -91,7 +89,6 @@ export type AppState = {
 
 export const DEFAULT_SETTINGS: Settings = {
   tripName: "Unser Ferienhaus",
-  groupSize: null,
   tripFrom: null,
   tripTo: null,
 };

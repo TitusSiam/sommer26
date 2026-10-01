@@ -5,8 +5,8 @@ Ferienhäuser als Gruppe sammeln, filtern, vergleichen und abstimmen. Mobile-fir
 ## Funktionen
 
 - **Häuser erfassen** in wenigen Feldern: Link einfügen füllt Name, Titelbild, Quelle und oft Koordinaten automatisch (Airbnb klappt, andere Portale je nach Seite)
-- **Felder:** Bilder (Upload oder URL, erstes = Titelbild), Name, Link, Quelle, Schlafplätze, Gesamtpreis, Preis/Nacht, Preis pro Person (berechnet), Pool, Entfernung zum Meer, Zeitraum, Ausstattung (WLAN, Klima, Waschmaschine, Grill), Nachteile, Status, vorgeschlagen von
-- **Filter** wie im Shop, kombinierbar: Preis p. P./gesamt, Schlafplätze, Meer, Pool, Ausstattung, Status, Quelle, Person, passt zum Reisezeitraum
+- **Felder:** Bilder (Upload oder URL, erstes = Titelbild), Name, Link, Quelle, Schlafplätze, Gesamtpreis, Preis/Nacht, Pool, Entfernung zum Meer, Zeitraum, Ausstattung (WLAN, Klima, Waschmaschine, Grill), Nachteile, Status, vorgeschlagen von
+- **Filter** wie im Shop, kombinierbar: Gesamtpreis, Schlafplätze, Meer, Pool, Ausstattung, Status, Quelle, Person, passt zum Reisezeitraum
 - **Sortierung:** Stimmen, Preis, Schlafplätze, Strandnähe, neueste
 - **Karte** mit Preis-Pins, **Vergleich** von 2 bis 3 Häusern (bester Wert grün markiert)
 - **Herz-Voting und Kommentare** mit Namen, **Favorit und Ranking**, **Aktivitätsfeed**
@@ -16,7 +16,6 @@ Ferienhäuser als Gruppe sammeln, filtern, vergleichen und abstimmen. Mobile-fir
 
 - Nächte = Reisezeitraum (unter Einstellungen), sonst verfügbarer Zeitraum des Hauses
 - Fehlt der Gesamtpreis: Preis/Nacht × Nächte (mit * markiert), umgekehrt genauso
-- Preis pro Person = Gesamtpreis ÷ Mitreisende (Einstellungen), sonst ÷ Schlafplätze
 
 ## Lokal starten
 

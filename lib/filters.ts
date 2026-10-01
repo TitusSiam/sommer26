@@ -3,7 +3,6 @@ import type { Amenity, House, Settings, Source, Status } from "./types";
 
 export type Filters = {
   q: string;
-  maxPerPerson: number | null;
   maxTotal: number | null;
   minSleeps: number | null;
   pool: boolean;
@@ -17,7 +16,6 @@ export type Filters = {
 
 export const NO_FILTERS: Filters = {
   q: "",
-  maxPerPerson: null,
   maxTotal: null,
   minSleeps: null,
   pool: false,
@@ -31,7 +29,6 @@ export const NO_FILTERS: Filters = {
 
 export const SORTS = {
   votes: "Meiste Stimmen",
-  "pp-asc": "Preis p. P. aufsteigend",
   "total-asc": "Gesamtpreis aufsteigend",
   "total-desc": "Gesamtpreis absteigend",
   "sleeps-desc": "Meiste Schlafplätze",
@@ -43,7 +40,6 @@ export type SortKey = keyof typeof SORTS;
 export function activeFilterCount(f: Filters): number {
   return (
     (f.q.trim() ? 1 : 0) +
-    (f.maxPerPerson != null ? 1 : 0) +
     (f.maxTotal != null ? 1 : 0) +
     (f.minSleeps != null ? 1 : 0) +
     (f.pool ? 1 : 0) +
@@ -63,7 +59,6 @@ export function matches(h: House, f: Filters, s: Settings): boolean {
     const q = f.q.trim().toLowerCase();
     if (![h.name, h.location, h.cons, h.proposedBy].some((x) => x.toLowerCase().includes(q))) return false;
   }
-  if (f.maxPerPerson != null && (p.perPerson == null || p.perPerson > f.maxPerPerson)) return false;
   if (f.maxTotal != null && (p.total == null || p.total > f.maxTotal)) return false;
   if (f.minSleeps != null && (h.sleeps == null || h.sleeps < f.minSleeps)) return false;
   if (f.pool && !h.pool) return false;
@@ -83,8 +78,6 @@ export function sortHouses(list: House[], key: SortKey, s: Settings, votes: (id:
     switch (key) {
       case "votes":
         return -votes(h.id);
-      case "pp-asc":
-        return p.perPerson;
       case "total-asc":
         return p.total;
       case "total-desc":

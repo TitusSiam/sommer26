@@ -58,18 +58,8 @@ export function FilterSheet({
         </div>
 
         <div className="flex-1 space-y-6 overflow-y-auto px-4 py-4">
-          <Group title="Preis">
-            <div className="grid grid-cols-2 gap-3">
-              <label>
-                <span className="mb-1 block text-xs text-muted">max. pro Person</span>
-                <input
-                  inputMode="numeric"
-                  placeholder="€"
-                  className={inputClass}
-                  value={f.maxPerPerson ?? ""}
-                  onChange={(e) => set({ maxPerPerson: parseNumber(e.target.value) })}
-                />
-              </label>
+          <Group title="Gesamtpreis">
+            <div>
               <label>
                 <span className="mb-1 block text-xs text-muted">max. gesamt</span>
                 <input
